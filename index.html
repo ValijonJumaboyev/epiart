@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpiArt Studio v3 — Harmonic Vector Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+            /* Dark Studio Palette */
+            --bg-app: #090d16;
+            --bg-card: #131b2e;
+            --bg-card-hover: #1a243f;
+            --bg-input: #0e1526;
+            --border: #23314d;
+            --border-highlight: #38bdf840;
+
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+
+            /* Accents */
+            --accent-cyan: #38bdf8;
+            --accent-pink: #f43f5e;
+            --accent-purple: #c084fc;
+            --accent-emerald: #34d399;
+            --accent-amber: #fbbf24;
+
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* Top Bar Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1.5rem;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle at center, var(--accent-cyan), var(--accent-purple));
+            box-shadow: 0 0 12px var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: #000;
+        }
+
+        .logo-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #fff 0%, var(--accent-cyan) 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-tag {
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            padding: 2px 8px;
+            background: rgba(56, 189, 248, 0.1);
+            border-radius: 20px;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-weight: 600;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-layout-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-input);
+            padding: 3px 6px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+
+        .header-rails-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .rail-toggle-btn {
+            font-size: 0.76rem;
+            padding: 4px 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .rail-toggle-btn.active {
+            background: rgba(244, 63, 94, 0.15);
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        .header-presets {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .preset-label {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-right: 4px;
+            font-weight: 500;
+        }
+
+        /* Buttons & Inputs */
+        button,
+        label.btn-label {
+            font-family: var(--font-sans);
+            font-size: 0.82rem;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            user-select: none;
+        }
+
+        button:hover,
+        label.btn-label:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--text-dim);
+            color: #fff;
+        }
+
+        button.active {
+            background: var(--accent-cyan);
+            color: #090d16;
+            border-color: var(--accent-cyan);
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+        }
+
+        button.btn-danger:hover {
+            background: rgba(244, 63, 94, 0.2);
+            border-color: var(--accent-pink);
+            color: var(--accent-pink);
+        }
+
+        button.btn-accent {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.3);
+            color: var(--accent-cyan);
+        }
+
+        button.btn-accent:hover {
+            background: var(--accent-cyan);
+            color: #090d16;
+        }
+
+        /* Main Workspace App Layout */
+        .workspace {
+            display: grid;
+            grid-template-columns: 290px minmax(0, 1fr) 290px;
+            gap: 1rem;
+            padding: 1rem;
+            flex: 1;
+            align-items: stretch;
+            transition: grid-template-columns 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .workspace.left-collapsed {
+            grid-template-columns: 0px minmax(0, 1fr) 290px;
+        }
+
+        .workspace.right-collapsed {
+            grid-template-columns: 290px minmax(0, 1fr) 0px;
+        }
+
+        .workspace.left-collapsed.right-collapsed {
+            grid-template-columns: 0px minmax(0, 1fr) 0px;
+        }
+
+        .panel.collapsed {
+            display: none !important;
+        }
+
+        @media (max-width: 1180px) {
+            .workspace {
+                grid-template-columns: 1fr !important;
+            }
+
+            .panel.collapsed {
+                display: none !important;
+            }
+        }
+
+        /* Sidebar Panels */
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .panel-header {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .control-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-val {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--accent-cyan);
+        }
+
+        /* Color Swatches */
+        .color-palette {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .color-dot {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .color-dot:hover {
+            transform: scale(1.15);
+        }
+
+        .color-dot.active {
+            border-color: #fff;
+            transform: scale(1.1);
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        /* Form Controls */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            background: var(--bg-input);
+            border-radius: 5px;
+            outline: none;
+            border: 1px solid var(--border);
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+            cursor: pointer;
+            box-shadow: 0 0 6px var(--accent-cyan);
+            border: none;
+        }
+
+        /* Stroke Layers Manager List */
+        .layers-container {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            max-height: 190px;
+            overflow-y: auto;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 6px;
+        }
+
+        .layer-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 4px 6px;
+            font-size: 0.78rem;
+            transition: all 0.15s ease;
+        }
+
+        .layer-item:hover {
+            border-color: var(--text-dim);
+        }
+
+        .layer-item.locked {
+            opacity: 0.75;
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .layer-item.dragging {
+            opacity: 0.35;
+            border: 1px dashed var(--accent-cyan);
+        }
+
+        .layer-item.drag-over {
+            border-color: var(--accent-cyan);
+            background: var(--bg-card-hover);
+        }
+
+        .layer-drag-handle {
+            cursor: grab;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            user-select: none;
+            padding: 0 2px;
+        }
+
+        .layer-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            display: inline-block;
+        }
+
+        .layer-title {
+            flex: 1;
+            font-weight: 500;
+            color: var(--text-main);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            cursor: text;
+        }
+
+        .layer-name-input {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--accent-cyan);
+            color: #fff;
+            font-size: 0.76rem;
+            border-radius: 3px;
+            padding: 1px 4px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .layer-n-input {
+            width: 42px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--accent-cyan);
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            padding: 2px 4px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .layer-n-input::placeholder {
+            color: var(--text-dim);
+        }
+
+        .layer-btn {
+            padding: 2px 4px;
+            font-size: 0.75rem;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .layer-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Canvas Stage */
+        .stage-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .stage-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .canvas-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+        }
+
+        .canvas-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 4px;
+        }
+
+        .canvas-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .canvas-badge {
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            font-family: var(--font-mono);
+        }
+
+        .canvas-view-btn {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .canvas-view-btn:hover {
+            color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+        }
+
+        .canvas-wrapper {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            background: #060911;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            touch-action: none;
+        }
+
+        #drawCv {
+            cursor: crosshair;
+        }
+
+        /* Output JSON panel */
+        pre#output {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            max-height: 110px;
+            overflow: auto;
+            color: var(--accent-cyan);
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        /* Compression Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(4, 7, 13, 0.82);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 1rem;
+        }
+
+        .modal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-highlight);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 580px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.85rem 1.2rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg-input);
+        }
+
+        .modal-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-body {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.1rem;
+        }
+
+        .modal-preview-row {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+        }
+
+        .modal-preview-box {
+            width: 160px;
+            height: 160px;
+            background: #090d16;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .modal-metrics-box {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .modal-metric-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-metric-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        .modal-metric-val {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent-cyan);
+        }
+
+        .modal-grades-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 6px;
+        }
+
+        .modal-grade-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 8px 6px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.78rem;
+            transition: all 0.15s ease;
+            text-align: center;
+            gap: 3px;
+        }
+
+        .modal-grade-label input {
+            display: none;
+        }
+
+        .modal-grade-label:has(input:checked) {
+            background: rgba(56, 189, 248, 0.15);
+            border-color: var(--accent-cyan);
+            color: #fff;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.2);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 0.85rem 1.2rem;
+            border-top: 1px solid var(--border);
+            background: var(--bg-input);
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="sr-only">EpiArt Harmonic Vector Studio v3</h1>
+
+    <!-- Top Bar Header -->
+    <header>
+        <div class="logo-group">
+            <div class="logo-icon">ε</div>
+            <div class="logo-title">EpiArt</div>
+            <span class="logo-tag">Studio v3</span>
+        </div>
+
+        <div class="header-presets">
+            <span class="preset-label">Presets:</span>
+            <button id="presetHumanoid" class="btn-accent" title="Humanoid Skeleton Tracing Scaffold">🧍
+                Skeleton</button>
+            <button id="presetHeart">♥ Heart</button>
+            <button id="presetStar">★ Star</button>
+            <button id="presetInfinity">∞ Infinity</button>
+            <button id="presetCircle">○ Circle</button>
+            <button id="resetAllBtn" class="btn-danger" style="margin-left:6px;">Reset All</button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Layout -->
+    <div class="workspace">
+
+        <!-- Left Sidebar: Drawing Tools & Layers -->
+        <aside class="panel">
+            <div class="panel-header">
+                <span>Drawing & Layers</span>
+            </div>
+
+            <!-- Mode Selector -->
+            <div class="control-group">
+                <div class="control-label"><span>Tool Mode</span></div>
+                <div style="display:flex; gap:6px;">
+                    <button id="toolPen" class="active" style="flex:1;">✎ Pen</button>
+                    <button id="toolEraser" style="flex:1;">⌫ Eraser</button>
+                </div>
+            </div>
+
+            <!-- Color Palette -->
+            <div class="control-group">
+                <div class="control-label"><span>Stroke Color</span></div>
+                <div class="color-palette">
+                    <div class="color-dot active" data-color="#38bdf8" style="background:#38bdf8; color:#38bdf8;"></div>
+                    <div class="color-dot" data-color="#f43f5e" style="background:#f43f5e; color:#f43f5e;"></div>
+                    <div class="color-dot" data-color="#c084fc" style="background:#c084fc; color:#c084fc;"></div>
+                    <div class="color-dot" data-color="#34d399" style="background:#34d399; color:#34d399;"></div>
+                    <div class="color-dot" data-color="#fbbf24" style="background:#fbbf24; color:#fbbf24;"></div>
+                    <div class="color-dot" data-color="#ffffff" style="background:#ffffff; color:#ffffff;"></div>
+                </div>
+            </div>
+
+            <!-- Stroke / Eraser Size Slider -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span id="brushLabel">Brush Size</span>
+                    <span id="brushSizeVal" class="control-val">2px</span>
+                </div>
+                <input type="range" id="brushSize" min="1" max="15" value="2">
+            </div>
+
+            <!-- Drawing Quality: Smoothing, Guides, Symmetry & Snap -->
+            <div class="control-group" style="border-top: 1px solid var(--border); padding-top: 0.6rem;">
+                <div class="control-label">
+                    <span>Smoothing</span>
+                    <span id="smoothVal" class="control-val">20%</span>
+                </div>
+                <input type="range" id="smoothSlider" min="0" max="100" value="20">
+
+                <div style="display:flex; gap:6px; margin-top:4px;">
+                    <button id="snapToggle" class="active" style="flex:1; font-size:0.75rem; padding:4px 6px;">🧲
+                        Snap-Close: ON</button>
+                    <button id="guidesBtn" style="flex:1; font-size:0.75rem; padding:4px 6px;">📏 Guides: OFF</button>
+                </div>
+                <button id="symmetryBtn" style="width:100%; font-size:0.75rem; padding:4px 6px; margin-top:2px;">🪞
+                    Symmetry: OFF</button>
+            </div>
+
+            <!-- Reference Image Import -->
+            <div class="control-group" style="border-top: 1px solid var(--border); padding-top: 0.6rem;">
+                <div class="control-label">
+                    <span>Reference Image</span>
+                    <span id="refOpacityVal" class="control-val">50%</span>
+                </div>
+                <div style="display:flex; gap:6px; align-items:center;">
+                    <label class="btn-label" style="flex:1; font-size:0.75rem; padding:4px 6px; text-align:center;">
+                        🖼 Load Ref
+                        <input type="file" id="refImageInput" accept="image/*" style="display:none;">
+                    </label>
+                    <button id="refToggleBtn" style="display:none; font-size:0.75rem; padding:4px 8px;">👁 Ref:
+                        ON</button>
+                </div>
+                <input type="range" id="refOpacitySlider" min="0" max="100" value="50" style="margin-top:4px;">
+            </div>
+
+            <!-- Stroke Layers List Panel -->
+            <div class="control-group" style="border-top: 1px solid var(--border); padding-top: 0.6rem;">
+                <div class="control-label">
+                    <span>Stroke Layers</span>
+                    <span id="layerCountVal" class="control-val">0 layers</span>
+                </div>
+                <div id="layersList" class="layers-container">
+                    <div style="font-size:0.75rem; color:var(--text-dim); text-align:center; padding:12px;">
+                        No strokes drawn yet
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="control-group" style="margin-top: auto;">
+                <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                    <button id="undoBtn" style="flex:1;" title="Undo (Ctrl+Z)">↶ Undo</button>
+                    <button id="clearBtn" class="btn-danger" style="flex:1;">🗑 Clear</button>
+                </div>
+                <button id="mergeBtn" title="Collapse all visible strokes into a single continuous stroke pack"
+                    style="margin-top:6px; width:100%;">
+                    🔀 Merge Visible Strokes
+                </button>
+            </div>
+        </aside>
+
+        <!-- Center Stage: Canvases -->
+        <main class="stage-container">
+            <!-- Draw Canvas -->
+            <div class="canvas-card">
+                <div class="canvas-header">
+                    <span class="canvas-title">
+                        Vector Input Canvas
+                        <button id="resetDrawViewBtn" class="canvas-view-btn" title="Reset Zoom & Pan">⟲ 100%</button>
+                    </span>
+                    <span id="strokeCountBadge" class="canvas-badge">Space+Drag: Pan | Scroll: Zoom</span>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="drawCv"></canvas>
+                </div>
+            </div>
+
+            <!-- Reconstruction Canvas -->
+            <div class="canvas-card">
+                <div class="canvas-header">
+                    <span class="canvas-title">
+                        Harmonic Epicycles
+                        <button id="resetReconViewBtn" class="canvas-view-btn" title="Reset Zoom & Pan">⟲ 100%</button>
+                    </span>
+                    <span id="epicycleBadge" class="canvas-badge">Ready</span>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="reconCv"></canvas>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar: Fourier & Export Controls -->
+        <aside class="panel">
+            <div class="panel-header">
+                <span>Epicycle Engine</span>
+            </div>
+
+            <!-- Total Epicycle Budget Indicator -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Epicycle Budget</span>
+                    <span id="budgetVal" class="control-val">0 / 500</span>
+                </div>
+            </div>
+
+            <!-- Epicycles Default Slider -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Global Epicycles (N)</span>
+                    <span id="termsOut" class="control-val">20 terms</span>
+                </div>
+                <input type="range" id="terms" min="1" max="50" value="20">
+            </div>
+
+            <!-- Playback Speed Slider -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Playback Speed</span>
+                    <span id="speedVal" class="control-val">1.0x</span>
+                </div>
+                <input type="range" id="speedSlider" min="0.1" max="3" step="0.1" value="1.0">
+            </div>
+
+            <!-- Point Density Slider -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Point Density</span>
+                    <span id="densityVal" class="control-val">300 pts</span>
+                </div>
+                <input type="range" id="densitySlider" min="50" max="600" step="25" value="300">
+                <button id="reResampleBtn"
+                    style="font-size:0.75rem; padding:3px 8px; margin-top:2px; align-self:flex-end;">
+                    ↻ Re-resample All
+                </button>
+            </div>
+
+            <!-- Trail Length Ratio Slider -->
+            <div class="control-group">
+                <div class="control-label">
+                    <span>Trail Fade Length</span>
+                    <span id="trailVal" class="control-val">100%</span>
+                </div>
+                <input type="range" id="trailSlider" min="10" max="100" step="5" value="100">
+            </div>
+
+            <!-- Play / Overlay / Sequential Toggles -->
+            <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; gap:6px;">
+                    <button id="playBtn" class="btn-accent" style="flex:1;">❚❚ Pause</button>
+                    <button id="overlayBtn" class="active" style="flex:1;">👁 Overlay</button>
+                </div>
+                <button id="seqBtn" style="width:100%;">
+                    ⚡ Draw Strokes Sequentially: OFF
+                </button>
+            </div>
+
+            <!-- Export / Import Section -->
+            <div class="control-group"
+                style="margin-top: auto; border-top: 1px solid var(--border); padding-top: 0.8rem;">
+                <button id="exportModalBtn" class="btn-accent" style="width:100%; font-size:0.85rem; padding:8px;">
+                    📦 Export / Download Studio
+                </button>
+
+                <div class="control-label" style="margin-top:4px;"><span>Parameters JSON</span></div>
+                <pre id="output">No curve calculated</pre>
+
+                <div style="display:flex; gap:6px; margin-top:6px;">
+                    <button id="copyBtn" style="flex:1;">📋 Copy</button>
+                    <button id="downloadBtn" style="flex:1;" title="Fast-path Lossless JSON export">💾 Full
+                        JSON</button>
+                </div>
+
+                <button id="downloadRenderBtn" style="margin-top:6px; width:100%; font-size:0.78rem;"
+                    title="Opens compression modal pre-set to Low">
+                    🚀 Download Render-Only (Low)
+                </button>
+
+                <label class="btn-label" style="margin-top:6px; width:100%; text-align:center;">
+                    📂 Load File (.epi / .json)
+                    <input type="file" id="importFile" accept=".epi,.json,application/json" style="display:none;">
+                </label>
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- Export & Compression Modal -->
+    <div id="compressionModal" class="modal-backdrop">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span class="modal-title">📦 Export & Compression Studio</span>
+                <button id="modalCloseX" class="layer-btn" style="font-size:1.1rem;">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Format Selector -->
+                <div class="control-group">
+                    <div class="control-label"><span>Export Format</span></div>
+                    <div style="display:flex; gap:12px;">
+                        <label style="display:flex; align-items:center; gap:6px; font-size:0.82rem; cursor:pointer;">
+                            <input type="radio" name="compFormat" value="epi" checked>
+                            <span>.epi (Native Studio Format)</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:6px; font-size:0.82rem; cursor:pointer;">
+                            <input type="radio" name="compFormat" value="json">
+                            <span>.json (Standard JSON)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Compression Grades -->
+                <div class="control-group">
+                    <div class="control-label"><span>Compression Grade</span></div>
+                    <div class="modal-grades-grid">
+                        <label class="modal-grade-label">
+                            <input type="radio" name="compGrade" value="lossless" checked>
+                            <strong>Lossless</strong>
+                            <span style="font-size:0.7rem; color:var(--text-dim);">100% Coeffs</span>
+                        </label>
+                        <label class="modal-grade-label">
+                            <input type="radio" name="compGrade" value="high">
+                            <strong>High</strong>
+                            <span style="font-size:0.7rem; color:var(--text-dim);">Top ~60%</span>
+                        </label>
+                        <label class="modal-grade-label">
+                            <input type="radio" name="compGrade" value="medium">
+                            <strong>Medium</strong>
+                            <span style="font-size:0.7rem; color:var(--text-dim);">Top ~25%</span>
+                        </label>
+                        <label class="modal-grade-label">
+                            <input type="radio" name="compGrade" value="low">
+                            <strong>Low / Draft</strong>
+                            <span style="font-size:0.7rem; color:var(--text-dim);">Top ~10%</span>
+                        </label>
+                        <label class="modal-grade-label">
+                            <input type="radio" name="compGrade" value="custom">
+                            <strong>Custom</strong>
+                            <span style="font-size:0.7rem; color:var(--text-dim);">Manual %</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Custom Percentage Slider (conditionally shown) -->
+                <div id="customGradeGroup" class="control-group" style="display:none;">
+                    <div class="control-label">
+                        <span>Custom Truncation</span>
+                        <span id="modalCustomPctVal" class="control-val">50%</span>
+                    </div>
+                    <input type="range" id="modalCustomSlider" min="1" max="100" value="50">
+                </div>
+
+                <!-- Live Preview & Metrics -->
+                <div class="modal-preview-row">
+                    <canvas id="modalPreviewCv" class="modal-preview-box" width="160" height="160"></canvas>
+                    <div class="modal-metrics-box">
+                        <div class="modal-metric-card">
+                            <span class="modal-metric-label">Active Terms</span>
+                            <span id="modalMetricTerms" class="modal-metric-val">0 terms</span>
+                        </div>
+                        <div class="modal-metric-card">
+                            <span class="modal-metric-label">Estimated Size</span>
+                            <span id="modalMetricSize" class="modal-metric-val">~0 KB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="modalCancelBtn">Cancel</button>
+                <button id="modalDownloadBtn" class="btn-accent">⬇ Confirm & Download</button>
+            </div>
+        </div>
+    </div>
+
+    <!--Small adjustments-->
+    <script>
+        window.addEventListener('keydown', function (e) {
+            if (e.key === 'Space') {
+                e.preventDefault();
+            }
+        });
+    </script>
+    <!-- Modular Architecture Scripts -->
+    <script src="./js/state.js"></script>
+    <script src="./js/utils.js"></script>
+    <script src="./js/math.js"></script>
+    <script src="./js/drawing.js"></script>
+    <script src="./js/recon.js"></script>
+    <script src="./js/ui.js"></script>
+    <script src="./engine.js"></script>
+</body>
+
+</html>
