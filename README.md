@@ -151,3 +151,6 @@ Project repository: https://github.com/ValijonJumaboyev/epiart
 ## Disclaimer
 
 This project is provided as-is for creative exploration and artistic prototyping. It is not a production-grade commercial graphics engine, but it is intentionally structured to be easy to understand, extend, and learn from.
+
+## Project link
+https://epiart.netlify.app/
